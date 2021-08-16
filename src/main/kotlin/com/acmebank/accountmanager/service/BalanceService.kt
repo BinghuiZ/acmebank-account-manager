@@ -5,6 +5,7 @@ import com.acmebank.accountmanager.model.exception.BalanceNotFoundException
 import com.acmebank.accountmanager.repository.BalanceRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.stream.Collectors
 import java.util.stream.StreamSupport
 
@@ -21,6 +22,7 @@ class BalanceService(@Autowired val balanceRepository: BalanceRepository) {
         return balanceRepository.findById(id).orElseThrow { BalanceNotFoundException("${id} was not found") }
     }
 
+    @Transactional
     fun transferMoney(from: Int, to: Int, amount: Double): Balance? {
         val fromUser = getBalance(from)
         val toUser = getBalance(to)
