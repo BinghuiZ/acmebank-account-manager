@@ -2,6 +2,7 @@ package com.acmebank.accountmanager.service
 
 import com.acmebank.accountmanager.model.Balance
 import com.acmebank.accountmanager.model.exception.BalanceNotFoundException
+import com.acmebank.accountmanager.model.exception.InsufficientBalanceException
 import com.acmebank.accountmanager.repository.BalanceRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,7 +24,7 @@ class BalanceService(@Autowired val balanceRepository: BalanceRepository) {
     }
 
     @Transactional
-    fun transferMoney(from: Int, to: Int, amount: Double): Balance? {
+    fun transferMoney(from: Int, to: Int, amount: Double): Balance {
         val fromUser = getBalance(from)
         val toUser = getBalance(to)
         if (fromUser.balance - amount > 0) {
@@ -33,7 +34,7 @@ class BalanceService(@Autowired val balanceRepository: BalanceRepository) {
             balanceRepository.save(toUser)
             return fromUser
         } else {
-            return null
+            throw InsufficientBalanceException("Your balance is not enough to transfer money.")
         }
     }
 }
