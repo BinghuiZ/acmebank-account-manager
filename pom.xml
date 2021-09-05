@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.acmebank</groupId>
 	<artifactId>account-manager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>account-manager</name>
 	<description>account-manager with money transfer feature</description>
 	<properties>

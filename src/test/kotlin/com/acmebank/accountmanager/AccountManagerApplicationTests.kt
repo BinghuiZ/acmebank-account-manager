@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest
 @SpringBootTest
 class AccountManagerApplicationTests {
 
+	// TODO write automated test
 	@Test
 	fun contextLoads() {
 	}
