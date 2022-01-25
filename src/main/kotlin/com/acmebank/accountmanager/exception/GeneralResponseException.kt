@@ -1,8 +1,7 @@
-package com.acmebank.accountmanager.model.exception
+package com.acmebank.accountmanager.exception
 
-class InsufficientAccontException: RuntimeException {
+class GeneralResponseException: RuntimeException {
 
     constructor(message: String?): super(message)
     constructor(message: String?, throwable: Throwable?): super(message, throwable)
-
 }

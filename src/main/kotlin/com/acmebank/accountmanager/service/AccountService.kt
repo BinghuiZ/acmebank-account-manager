@@ -1,8 +1,6 @@
 package com.acmebank.accountmanager.service
 
 import com.acmebank.accountmanager.model.Account
-import com.acmebank.accountmanager.model.exception.AccountNotFoundException
-import com.acmebank.accountmanager.model.exception.InsufficientAccontException
 import com.acmebank.accountmanager.repository.AccountRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -21,7 +19,7 @@ class AccountService(@Autowired val accountRepository: AccountRepository) {
     }
 
     fun getAccount(id: Int): Account {
-        return accountRepository.findById(id).orElseThrow { AccountNotFoundException("${id} was not found") }
+        return accountRepository.findById(id).orElseThrow { Exception("$id was not found") }
     }
 
     @Transactional
@@ -35,7 +33,7 @@ class AccountService(@Autowired val accountRepository: AccountRepository) {
             accountRepository.save(toUser)
             return fromUser
         } else {
-            throw InsufficientAccontException("Your balance is not enough to transfer money.")
+            throw Exception("Your balance is not enough to transfer money.")
         }
     }
 }

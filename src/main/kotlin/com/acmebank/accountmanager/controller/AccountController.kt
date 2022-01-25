@@ -1,8 +1,7 @@
 package com.acmebank.accountmanager.controller
 
+import com.acmebank.accountmanager.exception.GeneralResponseException
 import com.acmebank.accountmanager.model.Account
-import com.acmebank.accountmanager.model.exception.AccountNotFoundException
-import com.acmebank.accountmanager.model.exception.InsufficientAccontException
 import com.acmebank.accountmanager.service.AccountService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -15,39 +14,34 @@ import java.math.BigDecimal
 class AccountController(@Autowired val accountService: AccountService) {
 
     @GetMapping("/{id}")
-    fun getAccountById(@PathVariable("id") id: Int): ResponseEntity<CusResponseObject> {
+    fun getAccountById(@PathVariable("id") id: Int): ResponseEntity<Account> {
         try {
             val account = accountService.getAccount(id)
-            return ResponseEntity<Account>(account, HttpStatus.OK) as ResponseEntity<CusResponseObject>
-        } catch (e: AccountNotFoundException) {
-            return ResponseEntity<ErrorHandleObject>(ErrorHandleObject(e.message), HttpStatus.BAD_REQUEST) as ResponseEntity<CusResponseObject>
+            return ResponseEntity<Account>(account, HttpStatus.OK)
+        } catch (e: Exception) {
+            throw GeneralResponseException(e.message)
         }
     }
 
     @GetMapping("/list")
-    fun getAllAccount(): ResponseEntity<CusResponseObject> {
+    fun getAllAccount(): ResponseEntity<List<Account>> {
         val list = accountService.getAllAccount()
         if (list.isEmpty()) {
-            return ResponseEntity<ErrorHandleObject>(ErrorHandleObject("No Records Found."), HttpStatus.BAD_REQUEST) as ResponseEntity<CusResponseObject>
+            throw GeneralResponseException("No Records Found.")
         }
-        return ResponseEntity<List<Account>>(list, HttpStatus.OK) as ResponseEntity<CusResponseObject>
+        return ResponseEntity<List<Account>>(list, HttpStatus.OK)
     }
 
     @PostMapping("/transfer")
     @ResponseBody
     fun transferMoney(@RequestParam("from") from: Int,
                       @RequestParam("to") to: Int,
-                      @RequestParam("amount") amount: BigDecimal): ResponseEntity<CusResponseObject> {
+                      @RequestParam("amount") amount: BigDecimal): ResponseEntity<Account> {
         try {
-            return ResponseEntity<Account>(accountService.transferMoney(from, to, amount), HttpStatus.OK) as ResponseEntity<CusResponseObject>
-        } catch (e: AccountNotFoundException) {
-            return ResponseEntity<ErrorHandleObject>(ErrorHandleObject(e.message), HttpStatus.BAD_REQUEST) as ResponseEntity<CusResponseObject>
-        } catch (e: InsufficientAccontException) {
-            return ResponseEntity<ErrorHandleObject>(ErrorHandleObject(e.message), HttpStatus.BAD_REQUEST) as ResponseEntity<CusResponseObject>
+            return ResponseEntity<Account>(accountService.transferMoney(from, to, amount), HttpStatus.OK)
+        } catch (e: Exception) {
+            throw GeneralResponseException(e.message)
         }
+
     }
 }
-
-interface CusResponseObject{}
-
-data class ErrorHandleObject(val error: String? = ""): CusResponseObject
